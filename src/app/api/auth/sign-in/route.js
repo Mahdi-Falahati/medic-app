@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
 
 import User from "@/models/User";
-import { validatePhoneNumber } from "@/app/utils/auth";
 import connectDB from "@/utils/connectDB";
+import { validatePhoneNumber } from "@/app/utils/auth";
+import { sign } from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export async function POST(req) {
   try {
     await connectDB();
 
-    const { firstName, lastName, VCode, phone } = await req.json();
+    const { phone, VCode } = await req.json();
 
-    if (!phone || !firstName || !lastName || !VCode) {
+    if (!phone || !VCode) {
       return NextResponse.json({
         error: "لطفا اطلاعات معتبر وارد کنید",
         status: 422,
@@ -24,25 +26,33 @@ export async function POST(req) {
       });
     }
 
-    const existingUser = await User.findOne({ phone });
-    if (existingUser) {
+    const user = await User.findOne({ phone });
+    if (!user) {
       return NextResponse.json({
-        error: "با این شماره قبلا ثبت نام کرده اید",
+        error: "این حساب کاربری وجود ندارد",
         status: 422,
       });
     }
 
     // Write condition for chechk Verification Code
 
-    const user = await User.create({
-      firstName,
-      lastName,
-      phone,
+    const expiretion = 24 * 60 * 60;
+    const token = sign({ phone }, process.env.SECRET_KEY, {
+      expiresIn: expiretion,
+    });
+
+    const cookieStore = await cookies();
+    cookieStore.set({
+      name: "token",
+      value: token,
+      httpOnly: true,
+      path: "/",
+      maxAge: expiretion,
     });
 
     return NextResponse.json({
-      message: "ثبت نام با موفقیت انجام شد",
-      status: 201,
+      message: `${user.firstName} - ${user.lastName} خوش آمدید`,
+      status: 200,
     });
   } catch (error) {
     console.log(error);

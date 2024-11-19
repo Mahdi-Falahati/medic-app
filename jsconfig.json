@@ -9,8 +9,9 @@
       "@/utils/*": ["src/app/utils/*"],
       "@/models/*": ["src/app/models/*"],
       "@/layout/*": ["src/app/components/layout/*"],
+      "@/elements/*": ["src/app/components/elements/*"],
       "@/module/*": ["src/app/components/module/*"],
-      "@/template/*": ["src/app/components/template/*"],
+      "@/template/*": ["src/app/components/template/*"]
     }
   }
 }

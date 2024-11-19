@@ -1,13 +1,13 @@
 import { hash, compare, genSalt } from "bcryptjs";
 
-async function hashPassword(password) {
+async function HashPhone(phone) {
   const salt = await genSalt(11);
-  const hashedPassword = await hash(password, salt);
-  return hashedPassword;
+  const hashedPhone = await hash(phone, salt);
+  return hashedPhone;
 }
 
-async function verifyPassword(password, hashPassword) {
-  const isValid = await compare(password, hashPassword);
+async function verifyPhone(phone, hashPhone) {
+  const isValid = await compare(phone, hashPhone);
   return isValid;
 }
 
@@ -21,8 +21,7 @@ const validateEmail = (email) => {
 
 const validatePhoneNumber = (phone) => {
   const regex = new RegExp("^(\\+98|0)?9\\d{9}$");
-  const result = regex.test("+989031234567");
-
+  const result = regex.test(phone);
   return result;
 };
 
@@ -32,8 +31,8 @@ function isNumeric(str) {
 }
 
 export {
-  hashPassword,
-  verifyPassword,
+  HashPhone,
+  verifyPhone,
   validateEmail,
   isNumeric,
   validatePhoneNumber,
