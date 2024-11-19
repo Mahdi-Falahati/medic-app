@@ -8,8 +8,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import VCode from "@/module/VCode";
+import { useState } from "react";
 
 export default function SignInPage() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
   const {
     setError,
@@ -19,6 +22,7 @@ export default function SignInPage() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     const { firstName, lastName, phone } = data;
 
     if (!validatePhoneNumber(phone)) {
@@ -40,6 +44,7 @@ export default function SignInPage() {
         toast.error(message.error);
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -80,14 +85,17 @@ export default function SignInPage() {
 
           <VCode />
         </div>
-
-        <button
-          className="hover:text-white text-gray-600 mt-5 flex justify-center items-center w-[250px] border border-solid hover:bg-green-600 border-green-600 py-1 rounded-md text-xl"
-          type="submit"
-        >
-          <FaSignInAlt className="ml-2" />
-          ثبت نام
-        </button>
+        {isLoading ? (
+          <span className="loading loading-ring loading-lg"></span>
+        ) : (
+          <button
+            className="hover:text-white text-gray-600 mt-5 flex justify-center items-center w-[250px] border border-solid hover:bg-green-600 border-green-600 py-1 rounded-md text-xl"
+            type="submit"
+          >
+            <FaSignInAlt className="ml-2" />
+            ثبت نام
+          </button>
+        )}
         <div></div>
         <div className="mb-3 mt-6">
           <span>حساب دارم</span>

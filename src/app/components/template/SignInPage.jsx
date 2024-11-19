@@ -7,8 +7,10 @@ import Link from "next/link";
 import { IoMdLogIn } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import VCode from "../module/VCode";
+import { useState } from "react";
 
 export default function SignInPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     setError,
     register,
@@ -19,6 +21,7 @@ export default function SignInPage() {
   const router = useRouter();
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     const { phone } = data;
     if (!validatePhoneNumber(phone)) {
       setError("phone", {
@@ -37,6 +40,7 @@ export default function SignInPage() {
         router.replace("/");
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -59,13 +63,17 @@ export default function SignInPage() {
           <VCode />
         </div>
 
-        <button
-          className="hover:text-white text-gray-600 mt-5 flex justify-center items-center w-[250px] border border-solid hover:bg-green-600 border-green-600 py-1 rounded-md text-xl"
-          type="submit"
-        >
-          <IoMdLogIn className="ml-2" />
-          ورود
-        </button>
+        {isLoading ? (
+          <span className="loading loading-ring loading-lg"></span>
+        ) : (
+          <button
+            className="hover:text-white text-gray-600 mt-5 flex justify-center items-center w-[250px] border border-solid hover:bg-green-600 border-green-600 py-1 rounded-md text-xl"
+            type="submit"
+          >
+            <IoMdLogIn className="ml-2" />
+            ورود
+          </button>
+        )}
         <div className="mb-3 mt-6">
           <span>حساب ندارم</span>
           <Link
