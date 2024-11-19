@@ -1,4 +1,5 @@
 import { hash, compare, genSalt } from "bcryptjs";
+import { verify } from "jsonwebtoken";
 
 async function HashPhone(phone) {
   const salt = await genSalt(11);
@@ -25,10 +26,18 @@ const validatePhoneNumber = (phone) => {
   return result;
 };
 
-function isNumeric(str) {
+const isNumeric = (str) => {
   if (typeof str != "string") return false;
   return !isNaN(str) && !isNaN(parseFloat(str));
-}
+};
+
+const VerifyToken = (token, secretKey) => {
+  try {
+    return verify(token, secretKey);
+  } catch (error) {
+    return false;
+  }
+};
 
 export {
   HashPhone,
@@ -36,4 +45,5 @@ export {
   validateEmail,
   isNumeric,
   validatePhoneNumber,
+  VerifyToken,
 };
